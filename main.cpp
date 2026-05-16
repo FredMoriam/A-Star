@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <utility>
 
 
 struct node {
@@ -7,31 +8,18 @@ struct node {
     bool visited;
     int x;
     int y;
-    edge *edges;
 
     node(char name, int x, int y):
         name(name),
-        x(x),
-        y(y),
         visited(false),
-        edges(nullptr) {}
-};
-
-struct edge {
-    int weight;
-    node *to;
-    edge *next;
-
-    edge(int weight, node *to):
-        weight(weight),
-        to(to),
-        next(nullptr) {}
+        x(x),
+        y(y) {}
 };
 
 
-std::vector<node> adjacencyList;
+std::vector<std::vector<std::pair<node, int>>> adjacencyList;
 
-void connect(node base, node other);
+void connect(node base, node other, int weight);
 
 
 int main() {
@@ -39,18 +27,15 @@ int main() {
 }
 
 void connect(node base, node other, int weight) {
-    // Create an edge and connect it to the base node
-    edge *newEdge = new edge(weight, &other);
-    newEdge->next = base.edges;
-    base.edges = newEdge;
-
     for (int i = 0; i < adjacencyList.size(); i++) {
         // Check if the node exists in the adjacency list
-        if (adjacencyList[i].name == base.name) {
+        if (adjacencyList[i][0].first.name == base.name) {
+            adjacencyList[i].push_back({other, weight});
             return;
         }
     }
 
-    adjacencyList.push_back(base);
+    std::vector<std::pair<node, int>> newRow = {{base, 0}, {other, weight}};
+    adjacencyList.push_back(newRow);
     return;
 }
