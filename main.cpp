@@ -32,7 +32,7 @@ node J = node('J', 11, 12);
 std::vector<std::vector<std::pair<node, int>>> adjacencyList;
 
 
-void connect(node base, node other, int weight);
+void connect(node base, node other);
 int getNodeDistance(node base, node other);
 
 
@@ -40,7 +40,9 @@ int main() {
     return 0;
 }
 
-void connect(node base, node other, int weight) {
+void connect(node base, node other) {
+    int weight = getNodeDistance(base, other);
+    
     for (int i = 0; i < adjacencyList.size(); i++) {
         // Check if the node exists in the adjacency list
         if (adjacencyList[i][0].first.name == base.name) {
