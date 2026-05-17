@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <cmath>
 
 
 struct node {
@@ -20,6 +21,7 @@ struct node {
 std::vector<std::vector<std::pair<node, int>>> adjacencyList;
 
 void connect(node base, node other, int weight);
+int getNodeDistance(node base, node other);
 
 
 int main() {
@@ -38,4 +40,11 @@ void connect(node base, node other, int weight) {
     std::vector<std::pair<node, int>> newRow = {{base, 0}, {other, weight}};
     adjacencyList.push_back(newRow);
     return;
+}
+
+// Rounds up to the nearest whole number
+int getNodeDistance(node base, node other) {
+    float x = pow((base.x - other.x), 2);
+    float y = pow((base.y - other.y), 2);
+    return ceil(sqrt(x + y));
 }
