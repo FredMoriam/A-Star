@@ -17,8 +17,20 @@ struct node {
         y(y) {}
 };
 
+// Based on the latest 'Graph-v#.drawio.png'
+node A = node('A', 6, 10);
+node B = node('B', 7, 3);
+node C = node('C', 16, 11);
+node D = node('D', 4, 8);
+node E = node('E', 12, 2);
+node F = node('F', 2, 4);
+node G = node('G', 15, 4);
+node H = node('H', 17, 6);
+node I = node('I', 11, 7);
+node J = node('J', 11, 12);
 
 std::vector<std::vector<std::pair<node, int>>> adjacencyList;
+
 
 void connect(node base, node other, int weight);
 int getNodeDistance(node base, node other);
