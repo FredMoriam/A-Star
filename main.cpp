@@ -34,6 +34,7 @@ std::vector<std::vector<std::pair<node, int>>> adjacencyList;
 
 void connect(node base, node other);
 int getNodeDistance(node base, node other);
+float getNodeDistanceSquared(node base, node other);
 void constructGraph();
 
 
@@ -61,9 +62,13 @@ void connect(node base, node other) {
 
 // Rounds up to the nearest whole number
 int getNodeDistance(node base, node other) {
+    return ceil(sqrt(getNodeDistanceSquared(base, other)));
+}
+
+float getNodeDistanceSquared(node base, node other) {
     float x = pow((base.x - other.x), 2);
     float y = pow((base.y - other.y), 2);
-    return ceil(sqrt(x + y));
+    return x + y;
 }
 
 // Based on the latest 'Graph-v#.drawio.png'
