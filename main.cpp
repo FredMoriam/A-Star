@@ -11,12 +11,16 @@ struct node {
     bool visited;
     int x;
     int y;
+    int cost;
+    node* parent;
 
     node(char name, int x, int y):
         name(name),
         visited(false),
         x(x),
-        y(y) {}
+        y(y),
+        cost(INT_MAX),
+        parent(nullptr) {}
 };
 
 // Based on the latest 'Graph-v#.drawio.png'
@@ -33,19 +37,104 @@ node* J = new node('J', 11, 12);
 
 vector<vector<pair<node*, int>>> adjacencyList;
 // vector<node*> nodes = {A, B, C, D, E, F, G, H, I, J};
+vector<node*> minheap;
 
 
 void connect(node* base, node* other);
 int getNodeDistance(node* base, node* other);
 void constructGraph();
 void traverse(node* start, node* end);
+void pushMinHeap(node* node);
+node* popMinHeap();
 
 int main(int argc, char* argv[]) {
     constructGraph();
+    minheap.push_back(new node('Z', 0, 0));
 
     traverse(A, J);
     
     return 0;
+}
+
+void dijkstra(node* start, node* end) {
+    start->cost = 0;
+
+    node* currentNode = start;
+
+    while (currentNode->name != end->name) {
+        for (vector row : adjacencyList) {
+            if (row[0].first->name == currentNode->name) {
+
+                for (int i = 1; i < row.size(); i++) {
+                    node* neighbor = row[i].first;
+                    int weight = row[i].second;
+
+                    if (neighbor->visited) continue;
+
+                    int newCost = currentNode->cost + weight;
+                    
+                    neighbor->cost = currentNode->cost + weight;
+                    neighbor->parent = currentNode;
+                    pushMinHeap(neighbor);
+
+                    currentNode->visited = true;
+                }
+                break;
+            }
+        }
+
+        currentNode = popMinHeap();
+
+        if (currentNode == nullptr) {
+            cout << "No path found.\n";
+            return;
+        }
+    }
+}
+
+node* popMinHeap() {
+    if (minheap.size() < 2) return nullptr;
+
+    node* root = minheap[1];
+    minheap[1] = minheap.back();
+    minheap.pop_back();
+
+    int i = 1;
+    int maxIndex = minheap.size() - 1;
+
+    while (i*2 < maxIndex) {
+        int left = i*2;
+        int right = i*2 + 1;
+
+        if (minheap[i]->cost <= minheap[left]->cost && minheap[i]->cost <= minheap[right]->cost) break;
+
+        if (minheap[left]->cost < minheap[right]->cost) {
+            node* temp = minheap[i];
+            minheap[i] = minheap[left];
+            minheap[left] = temp;
+    
+            i = left;
+        } else if (minheap[left]->cost > minheap[right]->cost) {
+            node* temp = minheap[i];
+            minheap[i] = minheap[right];
+            minheap[right] = temp;
+    
+            i = right;
+        }
+    }
+
+    return root;
+}
+
+void pushMinHeap(node* node) {
+    minheap.push_back(node);
+    int i = minheap.size() - 1;
+
+    while (node->cost < minheap[i/2]->cost) {
+        minheap[i] = minheap[i/2];
+        minheap[i/2] = node;
+        i = i/2;
+    }
 }
 
 void traverse(node* start, node* end){
