@@ -31,7 +31,7 @@ node* H = new node('H', 17, 6);
 node* I = new node('I', 11, 7);
 node* J = new node('J', 11, 12);
 
-std::vector<std::vector<std::pair<node*, int>>> adjacencyList;
+vector<vector<pair<node*, int>>> adjacencyList;
 // vector<node*> nodes = {A, B, C, D, E, F, G, H, I, J};
 
 
@@ -102,7 +102,7 @@ void connect(node* base, node* other) {
         }
     }
 
-    std::vector<std::pair<node*, int>> newRow = {{base, 0}, {other, weight}};
+    vector<pair<node*, int>> newRow = {{base, 0}, {other, weight}};
     adjacencyList.push_back(newRow);
     return;
 }
