@@ -37,7 +37,7 @@ node* J = new node('J', 11, 12);
 
 vector<vector<pair<node*, int>>> adjacencyList;
 // vector<node*> nodes = {A, B, C, D, E, F, G, H, I, J};
-vector<node*> minheap;
+vector<node*> minheap = {new node('Z', 0, 0)};
 
 
 void connect(node* base, node* other);
@@ -46,22 +46,57 @@ void constructGraph();
 void traverse(node* start, node* end);
 void pushMinHeap(node* node);
 node* popMinHeap();
+void traceBackPath(node* node);
+void printMinHeap();
 
 int main(int argc, char* argv[]) {
     constructGraph();
-    minheap.push_back(new node('Z', 0, 0));
 
-    traverse(A, J);
+    node* start = A;
+    node* end = J;
+
+    traverse(start, end);
+
+    cout << "Path from " << start->name << " to " << end->name << "\n";
+    traceBackPath(end);
+    cout << endl;
     
     return 0;
 }
 
-void dijkstra(node* start, node* end) {
+void printMinHeap() {
+    for (int i = 1; i < minheap.size(); i++) {
+        cout << minheap[i]->name << " ";
+    }
+    cout << endl;
+}
+
+void traceBackPath(node* node) {
+    if (node->parent != nullptr) {
+        traceBackPath(node->parent);
+    }
+    cout << node->name << " ";
+}
+
+void traverse(node* start, node* end) {
     start->cost = 0;
+    pushMinHeap(start);
+    node* currentNode;
 
-    node* currentNode = start;
+    while (minheap.size() > 1) {
+        printMinHeap(); // DEBUG
+        
+        currentNode = popMinHeap();
+        if (currentNode == nullptr) {
+            cout << "No path found!\n";
+            return;
+        }
+        
+        if (currentNode->visited) continue;
 
-    while (currentNode->name != end->name) {
+        currentNode->visited = true; 
+
+        // Find the edges of the current node
         for (vector row : adjacencyList) {
             if (row[0].first->name == currentNode->name) {
 
@@ -69,25 +104,16 @@ void dijkstra(node* start, node* end) {
                     node* neighbor = row[i].first;
                     int weight = row[i].second;
 
-                    if (neighbor->visited) continue;
-
                     int newCost = currentNode->cost + weight;
-                    
-                    neighbor->cost = currentNode->cost + weight;
-                    neighbor->parent = currentNode;
-                    pushMinHeap(neighbor);
 
-                    currentNode->visited = true;
+                    if (newCost < neighbor->cost) {
+                        neighbor->cost = currentNode->cost + weight;
+                        neighbor->parent = currentNode;
+                        pushMinHeap(neighbor);
+                    }
                 }
                 break;
             }
-        }
-
-        currentNode = popMinHeap();
-
-        if (currentNode == nullptr) {
-            cout << "No path found.\n";
-            return;
         }
     }
 }
@@ -130,53 +156,11 @@ void pushMinHeap(node* node) {
     minheap.push_back(node);
     int i = minheap.size() - 1;
 
-    while (node->cost < minheap[i/2]->cost) {
+    while (i > 1 && node->cost < minheap[i/2]->cost) {
         minheap[i] = minheap[i/2];
         minheap[i/2] = node;
         i = i/2;
     }
-}
-
-void traverse(node* start, node* end){
-    node* current = start;
-    while(current->name != end->name) {
-        cout << current->name << " -> ";
-        int minG = INT_MAX;
-        int minH = INT_MAX;
-        int minSum = INT_MAX;
-        node* nextNode = current;
-        current->visited = true;
-
-        for (int i = 0; i < adjacencyList.size(); i++) {
-            if (adjacencyList[i][0].first->name == current->name) {
-
-                for (int j = 1; j < adjacencyList[i].size(); j++) {
-                    node* currentNode = adjacencyList[i][j].first;
-                    int gCost = adjacencyList[i][j].second;
-                    int dCost = getNodeDistance(currentNode, end);
-
-                    int sumCost = gCost + dCost;
-
-                    if (!currentNode->visited && sumCost < minSum) {
-                        minG = gCost;
-                        minH = dCost;
-                        minSum = sumCost;
-                        currentNode->visited = true;
-                        nextNode = currentNode;
-                    }
-                }
-                break;
-            }
-        }
-
-        if (nextNode == current) {
-            cout << "No path found!" << endl;
-            return;
-        }
-
-        current = nextNode;
-    }
-    cout << end->name << endl;
 }
 
 void connect(node* base, node* other) {
