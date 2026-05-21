@@ -19,36 +19,37 @@ struct node {
 };
 
 // Based on the latest 'Graph-v#.drawio.png'
-node A = node('A', 6, 10);
-node B = node('B', 7, 3);
-node C = node('C', 16, 11);
-node D = node('D', 4, 8);
-node E = node('E', 12, 2);
-node F = node('F', 2, 4);
-node G = node('G', 15, 4);
-node H = node('H', 17, 6);
-node I = node('I', 11, 7);
-node J = node('J', 11, 12);
+node* A = new node('A', 6, 10);
+node* B = new node('B', 7, 3);
+node* C = new node('C', 16, 11);
+node* D = new node('D', 4, 8);
+node* E = new node('E', 12, 2);
+node* F = new node('F', 2, 4);
+node* G = new node('G', 15, 4);
+node* H = new node('H', 17, 6);
+node* I = new node('I', 11, 7);
+node* J = new node('J', 11, 12);
 
 std::vector<std::vector<std::pair<node*, int>>> adjacencyList;
+// vector<node*> nodes = {A, B, C, D, E, F, G, H, I, J};
 
 
-void connect(node& base, node& other);
-int getNodeDistance(const node& base, const node& other);
+void connect(node* base, node* other);
+int getNodeDistance(node* base, node* other);
 void constructGraph();
-void traverse(node& start, node& end);
+void traverse(node* start, node* end);
 
-int main() {
+int main(int argc, char* argv[]) {
     constructGraph();
-    
-    traverse(A, E);
 
+    traverse(A, J);
+    
     return 0;
 }
 
-void traverse(node& start, node& end){
-    node* current = &start;
-    while(current->name != end.name) {
+void traverse(node* start, node* end){
+    node* current = start;
+    while(current->name != end->name) {
         cout << current->name << " -> ";
         int minG = INT_MAX;
         int minH = INT_MAX;
@@ -62,7 +63,7 @@ void traverse(node& start, node& end){
                 for (int j = 1; j < adjacencyList[i].size(); j++) {
                     node* currentNode = adjacencyList[i][j].first;
                     int gCost = adjacencyList[i][j].second;
-                    int dCost = getNodeDistance(*currentNode, end);
+                    int dCost = getNodeDistance(currentNode, end);
 
                     int sumCost = gCost + dCost;
 
@@ -85,30 +86,31 @@ void traverse(node& start, node& end){
 
         current = nextNode;
     }
-    cout << end.name << endl;
+    cout << end->name << endl;
 }
 
-void connect(node& base, node& other) {
+void connect(node* base, node* other) {
     int weight = getNodeDistance(base, other);
+    // cout << base->name << " -" << weight << "->" << other->name << endl;
 
     for (int i = 0; i < adjacencyList.size(); i++) {
         // Check if the node exists in the adjacency list
-        if (adjacencyList[i][0].first->name == base.name) {
-            adjacencyList[i].push_back({&other, weight});
+        if (adjacencyList[i][0].first->name == base->name) {
+            adjacencyList[i].push_back({other, weight});
             return;
         }
     }
 
-    std::vector<std::pair<node*, int>> newRow = {{&base, 0}, {&other, weight}};
+    std::vector<std::pair<node*, int>> newRow = {{base, 0}, {other, weight}};
     adjacencyList.push_back(newRow);
     return;
 }
 
 // Rounds up to the nearest whole number
-int getNodeDistance(const node& base, const node& other) {
-    float x = pow((base.x - other.x), 2);
-    float y = pow((base.y - other.y), 2);
-    return x + y;
+int getNodeDistance(node* base, node* other) {
+    float x = pow((base->x - other->x), 2);
+    float y = pow((base->y - other->y), 2);
+    return ceil(sqrt(x + y));
 }
 
 // Based on the latest 'Graph-v#.drawio.png'
