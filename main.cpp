@@ -36,7 +36,7 @@ node* I = new node('I', 11, 7);
 node* J = new node('J', 11, 12);
 
 vector<vector<pair<node*, int>>> adjacencyList;
-// vector<node*> nodes = {A, B, C, D, E, F, G, H, I, J};
+vector<node*> nodes = {A, B, C, D, E, F, G, H, I, J};
 vector<node*> minheap = {new node('Z', 0, 0)};
 
 
@@ -52,8 +52,21 @@ void printMinHeap();
 int main(int argc, char* argv[]) {
     constructGraph();
 
-    node* start = A;
-    node* end = J;
+    if (argc != 3) {
+        cout << "Run the program with the following arguments: <start_node> <end_node>\n";
+        cout << "Ex: \"<.exe> A J\"\n";
+        return 1;
+    }
+
+    string inputStartNode = argv[1];
+    string inputEndNode = argv[2];
+    node* start;
+    node* end;
+
+    for (node* node : nodes) {
+        if (node->name == *argv[1]) start = node;
+        else if (node->name == *argv[2]) end = node;
+    }
 
     traverse(start, end);
 
@@ -85,7 +98,7 @@ void traverse(node* start, node* end) {
 
     while (minheap.size() > 1) {
         printMinHeap(); // DEBUG
-        
+
         currentNode = popMinHeap();
         if (currentNode == nullptr) {
             cout << "No path found!\n";
