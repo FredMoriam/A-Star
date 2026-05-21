@@ -96,7 +96,7 @@ void traverse(node* start, node* end) {
     pushMinHeap(start);
     node* currentNode;
 
-    while (minheap.size() > 1) {
+    while (currentNode->name != end->name) {
         printMinHeap(); // DEBUG
 
         currentNode = popMinHeap();
@@ -117,7 +117,9 @@ void traverse(node* start, node* end) {
                     node* neighbor = row[i].first;
                     int weight = row[i].second;
 
-                    int newCost = currentNode->cost + weight;
+                    int gCost = currentNode->cost + weight;
+                    int hCost = getNodeDistance(currentNode, neighbor);
+                    int newCost = gCost + hCost;
 
                     if (newCost < neighbor->cost) {
                         neighbor->cost = currentNode->cost + weight;
