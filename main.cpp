@@ -2,6 +2,7 @@
 #include <vector>
 #include <utility>
 #include <cmath>
+using namespace std;
 
 
 struct node {
@@ -29,43 +30,82 @@ node H = node('H', 17, 6);
 node I = node('I', 11, 7);
 node J = node('J', 11, 12);
 
-std::vector<std::vector<std::pair<node, int>>> adjacencyList;
+std::vector<std::vector<std::pair<node*, int>>> adjacencyList;
 
 
-void connect(node base, node other);
-int getNodeDistance(node base, node other);
-float getNodeDistanceSquared(node base, node other);
+void connect(node& base, node& other);
+int getNodeDistance(const node& base, const node& other);
 void constructGraph();
-
+void traverse(node& start, node& end);
 
 int main() {
     constructGraph();
     
+    traverse(A, E);
+
     return 0;
 }
 
-void connect(node base, node other) {
+void traverse(node& start, node& end){
+    node* current = &start;
+    while(current->name != end.name) {
+        cout << current->name << " -> ";
+        int minG = INT_MAX;
+        int minH = INT_MAX;
+        int minSum = INT_MAX;
+        node* nextNode = current;
+        current->visited = true;
+
+        for (int i = 0; i < adjacencyList.size(); i++) {
+            if (adjacencyList[i][0].first->name == current->name) {
+
+                for (int j = 1; j < adjacencyList[i].size(); j++) {
+                    node* currentNode = adjacencyList[i][j].first;
+                    int gCost = adjacencyList[i][j].second;
+                    int dCost = getNodeDistance(*currentNode, end);
+
+                    int sumCost = gCost + dCost;
+
+                    if (!currentNode->visited && sumCost < minSum) {
+                        minG = gCost;
+                        minH = dCost;
+                        minSum = sumCost;
+                        currentNode->visited = true;
+                        nextNode = currentNode;
+                    }
+                }
+                break;
+            }
+        }
+
+        if (nextNode == current) {
+            cout << "No path found!" << endl;
+            return;
+        }
+
+        current = nextNode;
+    }
+    cout << end.name << endl;
+}
+
+void connect(node& base, node& other) {
     int weight = getNodeDistance(base, other);
 
     for (int i = 0; i < adjacencyList.size(); i++) {
         // Check if the node exists in the adjacency list
-        if (adjacencyList[i][0].first.name == base.name) {
-            adjacencyList[i].push_back({other, weight});
+        if (adjacencyList[i][0].first->name == base.name) {
+            adjacencyList[i].push_back({&other, weight});
             return;
         }
     }
 
-    std::vector<std::pair<node, int>> newRow = {{base, 0}, {other, weight}};
+    std::vector<std::pair<node*, int>> newRow = {{&base, 0}, {&other, weight}};
     adjacencyList.push_back(newRow);
     return;
 }
 
 // Rounds up to the nearest whole number
-int getNodeDistance(node base, node other) {
-    return ceil(sqrt(getNodeDistanceSquared(base, other)));
-}
-
-float getNodeDistanceSquared(node base, node other) {
+int getNodeDistance(const node& base, const node& other) {
     float x = pow((base.x - other.x), 2);
     float y = pow((base.y - other.y), 2);
     return x + y;
