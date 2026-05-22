@@ -123,33 +123,37 @@ void traceBackPath(node* node) {
 void traverse(node* start, node* end) {
     start->cost = 0;
     pushMinHeap(start);
-    node* currentNode;
+    node* currentNode = nullptr;
 
-    while (currentNode->name != end->name) {
+    while (true) {
         // !=== UNCOMMENT TO SEE HEAP AND NODE COSTS ===!
         // printMinHeap();
 
         currentNode = popMinHeap();
+        
         if (currentNode == nullptr) {
             cout << "No path found!\n";
             return;
         }
-        
+
+        if (currentNode->name == end->name) break;
+
         if (currentNode->visited) continue;
 
         currentNode->visited = true; 
 
         // Find the edges of the current node
-        for (vector row : adjacencyList) {
+        for (auto& row : adjacencyList) {
             if (row[0].first->name == currentNode->name) {
 
+                // Update each neighbor
                 for (int i = 1; i < row.size(); i++) {
                     node* neighbor = row[i].first;
                     int weight = row[i].second;
 
                     // A-Star implementation
                     int gCost = currentNode->cost + weight;
-                    int hCost = getNodeDistance(currentNode, neighbor);
+                    int hCost = getNodeDistance(neighbor, end);
                     int newCost = gCost + hCost;
 
                     if (newCost < neighbor->cost) {
@@ -174,24 +178,37 @@ node* popMinHeap() {
     int i = 1;
     int maxIndex = minheap.size() - 1;
 
-    while (i*2 < maxIndex) {
+    while (i*2 <= maxIndex) {
         int left = i*2;
         int right = i*2 + 1;
 
-        if (minheap[i]->cost <= minheap[left]->cost && minheap[i]->cost <= minheap[right]->cost) break;
+        // If right child exists, then the left child also exists
+        if (right <= maxIndex) {
+            if (minheap[i]->cost <= minheap[left]->cost && minheap[i]->cost <= minheap[right]->cost) break;
 
-        if (minheap[left]->cost < minheap[right]->cost) {
-            node* temp = minheap[i];
-            minheap[i] = minheap[left];
-            minheap[left] = temp;
-    
-            i = left;
-        } else if (minheap[left]->cost > minheap[right]->cost) {
-            node* temp = minheap[i];
-            minheap[i] = minheap[right];
-            minheap[right] = temp;
-    
-            i = right;
+            if (minheap[left]->cost < minheap[right]->cost) {
+                node* temp = minheap[i];
+                minheap[i] = minheap[left];
+                minheap[left] = temp;
+        
+                i = left;
+            } else {
+                node* temp = minheap[i];
+                minheap[i] = minheap[right];
+                minheap[right] = temp;
+        
+                i = right;
+            }
+
+        // Only the left child exists
+        } else if (left <= maxIndex) {
+            if (minheap[i]->cost > minheap[left]->cost) {
+                node* temp = minheap[i];
+                minheap[i] = minheap[left];
+                minheap[left] = temp;
+        
+                i = left;
+            }
         }
     }
 
