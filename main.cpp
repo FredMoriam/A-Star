@@ -201,17 +201,7 @@ void pushMinHeap(node* node) {
 void connect(node* base, node* other) {
     int weight = getNodeDistance(base, other);
 
-    for (int i = 0; i < adjacencyList.size(); i++) {
-        // Check if the node exists in the adjacency list
-        if (adjacencyList[i][0].first->name == base->name) {
-            adjacencyList[i].push_back({other, weight});
-            return;
-        }
-    }
-
-    vector<pair<node*, int>> newRow = {{base, 0}, {other, weight}};
-    adjacencyList.push_back(newRow);
-    return;
+    connectWithWeight(base, other, weight);
 }
 
 void connectWithWeight(node* base, node* other, int weight) {
