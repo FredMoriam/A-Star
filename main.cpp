@@ -76,6 +76,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Path from " << start->name << " to " << end->name << "\n";
     traceBackPath(end);
+    cout << " | Cost: " << end->cost;
     cout << endl;
     
     return 0;
@@ -83,7 +84,7 @@ int main(int argc, char* argv[]) {
 
 void printMinHeap() {
     for (int i = 1; i < minheap.size(); i++) {
-        cout << minheap[i]->name << " ";
+        cout << minheap[i]->name << "(" << minheap[i]->cost << ") ";
     }
     cout << endl;
 }
