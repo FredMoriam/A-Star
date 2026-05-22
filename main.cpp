@@ -34,7 +34,8 @@ struct node {
     bool visited;
     int x;
     int y;
-    int cost;
+    int gCost;
+    int fCost;
     node* parent;
 
     node(char name, int x, int y):
@@ -42,7 +43,8 @@ struct node {
         visited(false),
         x(x),
         y(y),
-        cost(INT_MAX),
+        gCost(INT_MAX),
+        fCost(INT_MAX),
         parent(nullptr) {}
 };
 
@@ -99,7 +101,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Path from " << start->name << " to " << end->name << "\n";
     traceBackPath(end);
-    cout << " | Cost: " << end->cost;
+    cout << " | Cost: " << end->gCost;
     cout << endl;
     
     return 0;
@@ -107,7 +109,7 @@ int main(int argc, char* argv[]) {
 
 void printMinHeap() {
     for (int i = 1; i < minheap.size(); i++) {
-        cout << minheap[i]->name << "(" << minheap[i]->cost << ") ";
+        cout << minheap[i]->name << "(" << minheap[i]->gCost << ") ";
     }
     cout << endl;
 }
@@ -121,7 +123,8 @@ void traceBackPath(node* node) {
 }
 
 void traverse(node* start, node* end) {
-    start->cost = 0;
+    start->gCost = 0;
+    start->fCost = 0;
     pushMinHeap(start);
     node* currentNode = nullptr;
 
@@ -152,12 +155,11 @@ void traverse(node* start, node* end) {
                     int weight = row[i].second;
 
                     // A-Star implementation
-                    int gCost = currentNode->cost + weight;
-                    int hCost = getNodeDistance(neighbor, end);
-                    int newCost = gCost + hCost;
+                    int newCost = currentNode->gCost + weight;
 
-                    if (newCost < neighbor->cost) {
-                        neighbor->cost = newCost;
+                    if (newCost < neighbor->gCost) {
+                        neighbor->gCost = newCost;
+                        neighbor->fCost = newCost + getNodeDistance(neighbor, end);
                         neighbor->parent = currentNode;
                         pushMinHeap(neighbor);
                     }
@@ -184,9 +186,9 @@ node* popMinHeap() {
 
         // If right child exists, then the left child also exists
         if (right <= maxIndex) {
-            if (minheap[i]->cost <= minheap[left]->cost && minheap[i]->cost <= minheap[right]->cost) break;
+            if (minheap[i]->fCost <= minheap[left]->fCost && minheap[i]->fCost <= minheap[right]->fCost) break;
 
-            if (minheap[left]->cost < minheap[right]->cost) {
+            if (minheap[left]->fCost < minheap[right]->fCost) {
                 node* temp = minheap[i];
                 minheap[i] = minheap[left];
                 minheap[left] = temp;
@@ -202,7 +204,9 @@ node* popMinHeap() {
 
         // Only the left child exists
         } else if (left <= maxIndex) {
-            if (minheap[i]->cost > minheap[left]->cost) {
+            if (minheap[i]->fCost < minheap[left]->fCost)
+                break;
+            else {
                 node* temp = minheap[i];
                 minheap[i] = minheap[left];
                 minheap[left] = temp;
@@ -219,7 +223,7 @@ void pushMinHeap(node* node) {
     minheap.push_back(node);
     int i = minheap.size() - 1;
 
-    while (i > 1 && node->cost < minheap[i/2]->cost) {
+    while (i > 1 && node->fCost < minheap[i/2]->fCost) {
         minheap[i] = minheap[i/2];
         minheap[i/2] = node;
         i = i/2;
