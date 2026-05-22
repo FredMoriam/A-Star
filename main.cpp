@@ -48,9 +48,12 @@ void pushMinHeap(node* node);
 node* popMinHeap();
 void traceBackPath(node* node);
 void printMinHeap();
+void connectWithWeight(node* base, node* other, int weight);
+void constructGraphV2();
 
 int main(int argc, char* argv[]) {
-    constructGraph();
+    // constructGraph();
+    constructGraphV2();
 
     if (argc != 3) {
         cout << "Run the program with the following arguments: <start_node> <end_node>\n";
@@ -195,6 +198,20 @@ void connect(node* base, node* other) {
     return;
 }
 
+void connectWithWeight(node* base, node* other, int weight) {
+    for (int i = 0; i < adjacencyList.size(); i++) {
+        // Check if the node exists in the adjacency list
+        if (adjacencyList[i][0].first->name == base->name) {
+            adjacencyList[i].push_back({other, weight});
+            return;
+        }
+    }
+
+    vector<pair<node*, int>> newRow = {{base, 0}, {other, weight}};
+    adjacencyList.push_back(newRow);
+    return;
+}
+
 // Rounds up to the nearest whole number
 int getNodeDistance(node* base, node* other) {
     float x = pow((base->x - other->x), 2);
@@ -234,4 +251,37 @@ void constructGraph() {
     connect(I, J);
     connect(J, H);
     connect(J, I);
+}
+
+void constructGraphV2() {
+    connectWithWeight(A, D, 12);
+    connectWithWeight(A, I, 14);
+    connectWithWeight(A, J, 10);
+    connectWithWeight(B, D, 5);
+    connectWithWeight(B, E, 6);
+    connectWithWeight(B, F, 13);
+    connectWithWeight(B, I, 8);
+    connectWithWeight(C, H, 7);
+    connectWithWeight(C, J, 6);
+    connectWithWeight(D, A, 12);
+    connectWithWeight(D, B, 5);
+    connectWithWeight(D, F, 2);
+    connectWithWeight(E, B, 6);
+    connectWithWeight(E, G, 17);
+    connectWithWeight(F, B, 13);
+    connectWithWeight(F, D, 2);
+    connectWithWeight(G, E, 17);
+    connectWithWeight(G, H, 4);
+    connectWithWeight(G, I, 15);
+    connectWithWeight(H, C, 7);
+    connectWithWeight(H, G, 4);
+    connectWithWeight(H, I, 3);
+    connectWithWeight(I, A, 14);
+    connectWithWeight(I, B, 8);
+    connectWithWeight(I, G, 15);
+    connectWithWeight(I, H, 3);
+    connectWithWeight(I, J, 8);
+    connectWithWeight(J, A, 10);
+    connectWithWeight(J, C, 6);
+    connectWithWeight(J, I, 8);
 }
