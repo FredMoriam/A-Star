@@ -1,3 +1,14 @@
+/*
+    A* Implementation in C++
+
+    - Nodes have (x, y) coordinates which can and are used
+    to calculate edge weights and heuristic based on distance
+
+    - Instead of two sets, a priority queue is used along with
+    a boolean node.visited field
+*/
+
+
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -24,7 +35,6 @@ struct node {
         parent(nullptr) {}
 };
 
-// Based on the latest 'Graph-v#.drawio.png'
 node* A = new node('A', 6, 10);
 node* B = new node('B', 7, 3);
 node* C = new node('C', 16, 11);
@@ -52,10 +62,11 @@ void printMinHeap();
 void connectWithWeight(node* base, node* other, int weight);
 void constructGraphV2();
 
+
 int main(int argc, char* argv[]) {
     // !=== CHANGE GRAPH HERE ===!
-    // constructGraph();
-    constructGraphV2();
+    // constructGraph();           // Refer to Graph-v1.drawio.png
+    constructGraphV2();         // Refer to Graph-v2.drawio.png
 
     if (argc != 3) {
         cout << "Run the program with the following arguments: <start_node> <end_node>\n";
@@ -90,6 +101,7 @@ void printMinHeap() {
     cout << endl;
 }
 
+// Recursive printing of a path from start to another node
 void traceBackPath(node* node) {
     if (node->parent != nullptr) {
         traceBackPath(node->parent);
@@ -223,7 +235,7 @@ int getNodeDistance(node* base, node* other) {
     return ceil(sqrt(x + y));
 }
 
-// Based on the latest 'Graph-v#.drawio.png'
+// Follows 'Graph-v1.drawio.png'
 void constructGraph() {
     connect(A, B);
     connect(A, C);
@@ -257,6 +269,7 @@ void constructGraph() {
     connect(J, I);
 }
 
+// Follows 'Graph-v2.drawio.png'
 void constructGraphV2() {
     connectWithWeight(A, D, 12);
     connectWithWeight(A, I, 14);
