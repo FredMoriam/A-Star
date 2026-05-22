@@ -259,6 +259,7 @@ int getNodeDistance(node* base, node* other) {
 
 // Follows 'Graph-v1.drawio.jpg'
 void constructGraph() {
+    cout << "Constructing Graph v1\n";
     connect(A, B);
     connect(A, C);
     connect(B, A);
@@ -293,6 +294,7 @@ void constructGraph() {
 
 // Follows 'Graph-v2.drawio.jpg'
 void constructGraphV2() {
+    cout << "Constructing Graph v2\n";
     connectWithWeight(A, D, 12);
     connectWithWeight(A, I, 14);
     connectWithWeight(A, J, 10);
