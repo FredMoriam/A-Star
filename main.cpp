@@ -122,12 +122,13 @@ void traverse(node* start, node* end) {
                     node* neighbor = row[i].first;
                     int weight = row[i].second;
 
+                    // A-Star implementation
                     int gCost = currentNode->cost + weight;
                     int hCost = getNodeDistance(currentNode, neighbor);
                     int newCost = gCost + hCost;
 
                     if (newCost < neighbor->cost) {
-                        neighbor->cost = currentNode->cost + weight;
+                        neighbor->cost = newCost;
                         neighbor->parent = currentNode;
                         pushMinHeap(neighbor);
                     }
