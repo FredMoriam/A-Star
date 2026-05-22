@@ -6,6 +6,17 @@
 
     - Instead of two sets, a priority queue is used along with
     a boolean node.visited field
+
+    Graphs available: (refer to the included jpegs)
+        1. 'Graph-v1'
+            - Weights are calculated based on actual distance between nodes
+        2. 'Graph-v2'
+            - weights were randomly given
+
+    Additional notes before running the program:
+        i. Choose a graph to use in the main() function
+        ii. A debug option to print the nodes in the priority queue and their
+            costs is available in the traverse() function
 */
 
 
@@ -65,8 +76,8 @@ void constructGraphV2();
 
 int main(int argc, char* argv[]) {
     // !=== CHANGE GRAPH HERE ===!
-    // constructGraph();           // Refer to Graph-v1.drawio.png
-    constructGraphV2();         // Refer to Graph-v2.drawio.png
+    // constructGraph();           // Refer to Graph-v1.drawio.jpg
+    constructGraphV2();         // Refer to Graph-v2.drawio.jpg
 
     if (argc != 3) {
         cout << "Run the program with the following arguments: <start_node> <end_node>\n";
@@ -225,7 +236,7 @@ int getNodeDistance(node* base, node* other) {
     return ceil(sqrt(x + y));
 }
 
-// Follows 'Graph-v1.drawio.png'
+// Follows 'Graph-v1.drawio.jpg'
 void constructGraph() {
     connect(A, B);
     connect(A, C);
@@ -259,7 +270,7 @@ void constructGraph() {
     connect(J, I);
 }
 
-// Follows 'Graph-v2.drawio.png'
+// Follows 'Graph-v2.drawio.jpg'
 void constructGraphV2() {
     connectWithWeight(A, D, 12);
     connectWithWeight(A, I, 14);
