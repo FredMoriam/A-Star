@@ -53,6 +53,7 @@ void connectWithWeight(node* base, node* other, int weight);
 void constructGraphV2();
 
 int main(int argc, char* argv[]) {
+    // !=== CHANGE GRAPH HERE ===!
     // constructGraph();
     constructGraphV2();
 
@@ -102,7 +103,8 @@ void traverse(node* start, node* end) {
     node* currentNode;
 
     while (currentNode->name != end->name) {
-        printMinHeap(); // DEBUG
+        // !=== UNCOMMENT TO SEE HEAP AND NODE COSTS ===!
+        // printMinHeap();
 
         currentNode = popMinHeap();
         if (currentNode == nullptr) {
@@ -186,7 +188,6 @@ void pushMinHeap(node* node) {
 
 void connect(node* base, node* other) {
     int weight = getNodeDistance(base, other);
-    // cout << base->name << " -" << weight << "->" << other->name << endl;
 
     for (int i = 0; i < adjacencyList.size(); i++) {
         // Check if the node exists in the adjacency list
